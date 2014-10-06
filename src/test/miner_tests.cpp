@@ -63,7 +63,8 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     // We can't make transactions until we have inputs
     // Therefore, load 100 blocks :)
     std::vector<CTransaction*>txFirst;
-    for (unsigned int i = 0; i < sizeof(blockinfo)/sizeof(*blockinfo); ++i)
+    // for (unsigned int i = 0; i < sizeof(blockinfo)/sizeof(*blockinfo); ++i)
+    for (unsigned int i = 0; i < 2; ++i)
     {
         CBlock *pblock = &pblocktemplate->block; // pointer for convenience
         pblock->nVersion = 1;
@@ -77,6 +78,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         pblock->hashMerkleRoot = pblock->BuildMerkleTree();
         pblock->nNonce = blockinfo[i].nonce;
         printf("Genesis: %s\n", Params().GenesisBlock().GetHash().ToString().c_str());
+        printf("Genesis nTime: %u\n", Params().GenesisBlock().nTime);
         puts("Block loader:");
         printf("  %u: %u\n", i, blockinfo[i].nonce);
         printf("  nTime: %u\n", pblock->nTime);
@@ -87,6 +89,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         CValidationState state;
         BOOST_CHECK(ProcessBlock(state, NULL, pblock));
         BOOST_CHECK(state.IsValid());
+        // BOOST_REQUIRE(1 == 0);
         pblock->hashPrevBlock = pblock->GetHash();
     }
     delete pblocktemplate;
